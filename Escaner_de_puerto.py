@@ -1,44 +1,47 @@
 import socket
 import ipaddress
 from tqdm import tqdm
+from menu import RESULT_FILE
 
-def validacion_ip ():
+def validation_ip ():
     while True:
-        ip = input("Ingrese IP: ")
+        ip = input("Enter IP: ")
         try:
             ipaddress.ip_address(ip)
             return ip
         except ValueError:
-            print("IP invalida, intente denuevo")
+            print("Invalid IP. Please try again.")
 
 
-
-def validacion_puerto():
+def validation_port():
     while True:
         try:
-            rango_de_puerto = int(input("Ingrese el rango de puertos (1 - 65535): "))
-            if 0 < rango_de_puerto < 65536:
-                return rango_de_puerto
+            port_range = int(input("Enter the port range (1 - 65535): "))
+            if 0 < port_range < 65536:
+                return port_range
             else:
-                print("Fuera de rango")
+                print("Out of range")
         except ValueError:
             print("ERROR")
 
              
-def escaneo (ip, rango_de_puerto):
-    for puerto in tqdm(range(1, rango_de_puerto + 1), desc = "Escaneando", unit = "Puertos"):
+def scan (ip, port_range):
+    with open(RESULT_FILE, "w") as archivo:
+        pass
+    
+    for port in tqdm(range(1, port_range + 1), desc = "scanning", unit = "Ports"):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1)
-        target = (ip, puerto)
-        resultado = sock.connect_ex(target)
+        target = (ip, port)
+        result = sock.connect_ex(target)
 
         try:
-            servicio = socket.getservbyport(puerto, 'tcp')
-            if resultado == 0:
-                with open("resultado_escaneo.txt", "a") as archivo:
-                    print(f"{puerto}:{servicio} ABIERTO ", file =archivo)        
+            service = socket.getservbyport(port, 'tcp')
+            if result == 0:
+                with open("scan results.txt", "a") as archivo:
+                    print(f"{port}:{service} OPEN", file =archivo)        
         except OSError:
             continue 
         
         sock.close()  
-    print("PUERTOS ESCANEADOS")
+    print("SCANNED PORTS")

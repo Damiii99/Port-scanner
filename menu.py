@@ -1,4 +1,4 @@
-from Port_Scanner import validation_ip, validation_port, scan
+from Escaner_de_puerto import validation_ip, validation_port, scan
 
 RESULT_FILE = "scan_results.txt"
 
